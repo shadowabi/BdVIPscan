@@ -2,57 +2,64 @@
 # -*- coding:utf-8 -*-
 #author:Sh4d0w_小白
 
-from requests import get
-from sys import argv
-from queue import Queue
-from threading import Thread
-from time import sleep
+import grequests
+import argparse
 from re import match
 from bs4 import BeautifulSoup
+import urllib3
+from tqdm import tqdm
+from os import system, _exit
+import platform
 
-q = Queue()
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+ap = argparse.ArgumentParser()
+ap.add_argument("-s", "--min" ,help = "start location", metavar = "100", required = True)
+ap.add_argument("-e", "--max" ,help = "end location", metavar = "999", required = True)
+good = []
 
-def Usage():
-    print("[Usage]python BdVIPscan.py [min(recommend >= 100)] [max(recommend <= 999)]")
+def clear():
+	if(platform.system() == "Windows"):
+		system("cls")
+	else:
+		system("clear")
 
 def psrHTML(url,html):
-	soup = BeautifulSoup(html,'lxml')
-	title = str(soup.find("title")).replace("<title>","")
+	soup = BeautifulSoup(html,"html.parser")
+	title = str(soup.title).replace("<title>","")
 	re = match(title, "百度网盘 \|")
 	if(re != None):
-		return url
+		good.append(url)
 
-def Scan():
-	if(q.empty() == False):
-		number = q.get()
-		url = "https://pan.baidu.com/component/view/%s4"%(number)
+def Scan(min,max):
+	rs = []
+	for i in range(min,max):
+		target = "https://pan.baidu.com/component/view/%s4"%(i)
 		try:
-			r = get(url)
-			good = psrHTML(url, r.content)
-			print("[+] " + good)
+			rs.append(grequests.get(target, timeout = 3, verify = False)) #扫描
 		except:
 			pass
 		finally:
-			q.task_done()
-
-
-def intoQueue(min ,max):
-	for i in range(int(min) ,int(max) + 1):
-		q.put(i)
+			pbar.update(1)
+	for i in grequests.map(rs):
+		psrHTML(target, i.content)
 
 if __name__=="__main__":
-	try:
-		min = argv[1]
-		max = argv[2]
-		if(min > max):
-			raise	
-		intoQueue(min,max)
-		print("开始进行扫描：")
-		for i in range(20):
-			t = Thread(target = Scan)
-			sleep(0.1)
-			t.start()
-			#t.join(1)
-		print("扫描结束！")
-	except:
-		Usage()
+	args = ap.parse_args()
+	min = int(args.min)
+	max = int(args.max)
+	print("开始进行扫描：")
+	pbar = tqdm(total = max-min)
+	Scan(min,max)
+	pbar.close()
+	clear()
+	print("扫描结束！")
+	print("输出扫描结果：")
+	with open("result.txt","w+",encoding='utf8') as f:
+			f.write(str(min) + " - " + str(max) + "\n")
+			print(str(min) + " - " + str(max))
+			for i in good:
+				print(i)
+				f.write(i + "\n")
+			print("已保存到result.txt文件中，按回车键退出程序！")
+			input()
+			_exit(0)
