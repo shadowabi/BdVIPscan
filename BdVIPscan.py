@@ -14,7 +14,7 @@ import platform
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 ap = argparse.ArgumentParser()
 ap.add_argument("-s", "--min" ,help = "start location", metavar = "100", required = True)
-ap.add_argument("-e", "--max" ,help = "end location", metavar = "999", required = True)
+ap.add_argument("-e", "--max" ,help = "end location", metavar = "110", required = True)
 good = []
 
 def clear():
@@ -41,7 +41,8 @@ def Scan(min,max):
 		finally:
 			pbar.update(1)
 	for i in grequests.map(rs):
-		psrHTML(target, i.content)
+		if i.status_code == 200:
+			psrHTML(i.url, i.content)
 
 if __name__=="__main__":
 	args = ap.parse_args()
@@ -55,11 +56,12 @@ if __name__=="__main__":
 	print("扫描结束！")
 	print("输出扫描结果：")
 	with open("result.txt","w+",encoding='utf8') as f:
-			f.write(str(min) + " - " + str(max) + "\n")
-			print(str(min) + " - " + str(max))
-			for i in good:
-				print(i)
-				f.write(i + "\n")
-			print("已保存到result.txt文件中，按回车键退出程序！")
-			input()
-			_exit(0)
+		f.write(args.min + " - " + args.max + "\n")
+		print(args.min + " - " + args.max)
+		for i in good:
+			print(i)
+			f.write(i + "\n")
+	print("已保存到result.txt文件中，按回车键退出程序！")
+	input()
+	_exit(0)
+
