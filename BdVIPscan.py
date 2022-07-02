@@ -10,6 +10,7 @@ import urllib3
 from tqdm import tqdm
 from os import system, _exit
 import platform
+from time import sleep
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 ap = argparse.ArgumentParser()
@@ -40,6 +41,7 @@ def Scan(min,max):
 			pass
 		finally:
 			pbar.update(1)
+			sleep(0.1)
 	for i in grequests.map(rs):
 		if i != None and i.status_code == 200:
 			psrHTML(i.url, i.content)
@@ -64,4 +66,3 @@ if __name__=="__main__":
 	print("已保存到result.txt文件中，按回车键退出程序！")
 	input()
 	_exit(0)
-
