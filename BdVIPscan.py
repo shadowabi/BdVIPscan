@@ -41,7 +41,7 @@ def Scan(min,max):
 		finally:
 			pbar.update(1)
 	for i in grequests.map(rs):
-		if i.status_code == 200:
+		if i != None and i.status_code == 200:
 			psrHTML(i.url, i.content)
 
 if __name__=="__main__":
