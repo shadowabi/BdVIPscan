@@ -50,6 +50,9 @@ if __name__=="__main__":
 	args = ap.parse_args()
 	min = int(args.min)
 	max = int(args.max)
+	if min > max :
+		print("参数错误！")
+		_exit(0)
 	print("开始进行扫描：")
 	pbar = tqdm(total = max-min)
 	Scan(min,max)
@@ -66,3 +69,4 @@ if __name__=="__main__":
 	print("已保存到result.txt文件中，按回车键退出程序！")
 	input()
 	_exit(0)
+
