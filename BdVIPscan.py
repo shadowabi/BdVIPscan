@@ -4,7 +4,7 @@
 
 import grequests
 import argparse
-from re import match
+from re import search
 from bs4 import BeautifulSoup
 import urllib3
 from tqdm import tqdm
@@ -26,9 +26,9 @@ def clear():
 
 def psrHTML(url,html):
 	soup = BeautifulSoup(html,"html.parser")
-	title = str(soup.title).replace("<title>","")
-	re = match(title, "百度网盘 \|")
-	if(re != None):
+	title = str(soup.title)
+	re = search("百度网盘 ",title)
+	if re:
 		good.append(url)
 
 def Scan(min,max):
@@ -57,7 +57,7 @@ if __name__=="__main__":
 	pbar = tqdm(total = max-min)
 	Scan(min,max)
 	pbar.close()
-	clear()
+	# clear()
 	print("扫描结束！")
 	print("输出扫描结果：")
 	with open("result.txt","w+",encoding='utf8') as f:
@@ -69,4 +69,3 @@ if __name__=="__main__":
 	print("已保存到result.txt文件中，按回车键退出程序！")
 	input()
 	_exit(0)
-
