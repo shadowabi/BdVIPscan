@@ -14,8 +14,8 @@ from time import sleep
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 ap = argparse.ArgumentParser()
-ap.add_argument("-s", "--min" ,help = "start location", metavar = "100", required = True)
-ap.add_argument("-e", "--max" ,help = "end location", metavar = "110", required = True)
+ap.add_argument("-s", "--min" ,help = "start location", metavar = "2000", required = True)
+ap.add_argument("-e", "--max" ,help = "end location", metavar = "2200", required = True)
 good = []
 
 def clear():
@@ -33,8 +33,8 @@ def psrHTML(url,html):
 
 def Scan(min,max):
 	rs = []
-	for i in range(min,max):
-		target = "https://pan.baidu.com/component/view/%s4"%(i)
+	for i in range(min,max + 1):
+		target = "https://pan.baidu.com/component/view/%s"%(i)
 		try:
 			rs.append(grequests.get(target, timeout = 3, verify = False)) #扫描
 		except:
@@ -50,7 +50,7 @@ if __name__=="__main__":
 	args = ap.parse_args()
 	min = int(args.min)
 	max = int(args.max)
-	if min > max :
+	if min > max or min / 1000 < 1 or max / 1000 < 1:
 		print("参数错误！")
 		_exit(0)
 	print("开始进行扫描：")
