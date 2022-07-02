@@ -5,6 +5,5 @@
 pip install -r requirements.txt  
 
 # Usage  
-[Usage]python BdVIPscan.py -s 200 -e 205  
-![image](https://user-images.githubusercontent.com/50265741/171600490-ff84ad69-3eea-415f-9d6b-54961ad53e9b.png)
-
+[Usage]python BdVIPscan.py -s 2000 -e 2100  
+![image](https://user-images.githubusercontent.com/50265741/176992738-1b0b984f-8498-454b-ae5d-11e732e15fbe.png)
